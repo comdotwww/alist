@@ -17,7 +17,7 @@ func getSiteConfig() SiteConfig {
 	siteConfig := SiteConfig{
 		BasePath: conf.URL.Path,
 		Cdn:      strings.ReplaceAll(strings.TrimSuffix(conf.Conf.Cdn, "/"), "$version", conf.WebVersion),
-		JwtHeaderKey: conf.Conf.JwtHeaderKey
+		JwtHeaderKey: conf.Conf.JwtHeaderKey,
 	}
 	if siteConfig.BasePath != "" {
 		siteConfig.BasePath = utils.FixAndCleanPath(siteConfig.BasePath)
