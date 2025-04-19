@@ -50,6 +50,7 @@ func initIndex() {
 	replaceMap := map[string]string{
 		"cdn: undefined":       fmt.Sprintf("cdn: '%s'", siteConfig.Cdn),
 		"base_path: undefined": fmt.Sprintf("base_path: '%s'", siteConfig.BasePath),
+		"jwt_header_key: undefined": fmt.Sprintf("jwt_header_key: '%s'", siteConfig.JwtHeaderKey),
 	}
 	for k, v := range replaceMap {
 		conf.RawIndexHtml = strings.Replace(conf.RawIndexHtml, k, v, 1)
