@@ -39,9 +39,9 @@ func (d *AListV2) Drop(ctx context.Context) error {
 
 func (d *AListV2) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([]model.Obj, error) {
 	url := d.Address + "/api/public/path"
-	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
-	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
-		jwtHeaderKey = "Authorization" // 设置默认值
+	jwtHeaderKey := conf.Conf.JwtHeaderKey
+	if jwtHeaderKey == "" {  // 如果配置值为空字符串，使用默认值
+		jwtHeaderKey = "Authorization"
 	}
 	var resp common.Resp[PathResp]
 	_, err := base.RestyClient.R().
@@ -74,9 +74,9 @@ func (d *AListV2) List(ctx context.Context, dir model.Obj, args model.ListArgs) 
 
 func (d *AListV2) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (*model.Link, error) {
 	url := d.Address + "/api/public/path"
-	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
-	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
-		jwtHeaderKey = "Authorization" // 设置默认值
+	jwtHeaderKey := conf.Conf.JwtHeaderKey
+	if jwtHeaderKey == "" {  // 如果配置值为空字符串，使用默认值
+		jwtHeaderKey = "Authorization"
 	}
 	var resp common.Resp[PathResp]
 	_, err := base.RestyClient.R().

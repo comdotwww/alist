@@ -184,9 +184,9 @@ func Verify2FA(c *gin.Context) {
 }
 
 func LogOut(c *gin.Context) {
-	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
-	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
-		jwtHeaderKey = "Authorization" // 设置默认值
+	jwtHeaderKey := conf.Conf.JwtHeaderKey
+	if jwtHeaderKey == "" {  // 如果配置值为空字符串，使用默认值
+		jwtHeaderKey = "Authorization"
 	}
 	err := common.InvalidateToken(c.GetHeader(jwtHeaderKey))
 	if err != nil {

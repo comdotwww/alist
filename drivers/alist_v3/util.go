@@ -35,9 +35,9 @@ func (d *AListV3) login() error {
 func (d *AListV3) request(api, method string, callback base.ReqCallback, retry ...bool) ([]byte, int, error) {
 	url := d.Address + "/api" + api
 	req := base.RestyClient.R()
-	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
-	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
-		jwtHeaderKey = "Authorization" // 设置默认值
+	jwtHeaderKey := conf.Conf.JwtHeaderKey
+	if jwtHeaderKey == "" {  // 如果配置值为空字符串，使用默认值
+		jwtHeaderKey = "Authorization"
 	}
 	req.SetHeader(jwtHeaderKey, d.Token)
 	if callback != nil {
