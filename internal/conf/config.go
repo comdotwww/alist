@@ -98,6 +98,7 @@ type Config struct {
 	SiteURL               string      `json:"site_url" env:"SITE_URL"`
 	Cdn                   string      `json:"cdn" env:"CDN"`
 	JwtSecret             string      `json:"jwt_secret" env:"JWT_SECRET"`
+	JwtHeaderKey          string      `json:"jwt_header_key" env:"JWT_HEADER_KEY"`
 	TokenExpiresIn        int         `json:"token_expires_in" env:"TOKEN_EXPIRES_IN"`
 	Database              Database    `json:"database" envPrefix:"DB_"`
 	Meilisearch           Meilisearch `json:"meilisearch" envPrefix:"MEILISEARCH_"`

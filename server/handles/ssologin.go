@@ -387,7 +387,11 @@ func SSOLoginCallback(c *gin.Context) {
 			Get(userUrl)
 	} else {
 		accessToken := utils.Json.Get(resp.Body(), "access_token").ToString()
-		resp, err = ssoClient.R().SetHeader("Authorization", "Bearer "+accessToken).
+		jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+		if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+			jwtHeaderKey = "Authorization" // 设置默认值
+		}
+		resp, err = ssoClient.R().SetHeader(jwtHeaderKey, "Bearer "+accessToken).
 			Get(userUrl)
 	}
 	if err != nil {

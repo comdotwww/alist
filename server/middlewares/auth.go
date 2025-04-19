@@ -15,7 +15,11 @@ import (
 // Auth is a middleware that checks if the user is logged in.
 // if token is empty, set user to guest
 func Auth(c *gin.Context) {
-	token := c.GetHeader("Authorization")
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
+	token := c.GetHeader(jwtHeaderKey)
 	if subtle.ConstantTimeCompare([]byte(token), []byte(setting.GetStr(conf.Token))) == 1 {
 		admin, err := op.GetAdmin()
 		if err != nil {
@@ -74,7 +78,11 @@ func Auth(c *gin.Context) {
 }
 
 func Authn(c *gin.Context) {
-	token := c.GetHeader("Authorization")
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
+	token := c.GetHeader(jwtHeaderKey)
 	if subtle.ConstantTimeCompare([]byte(token), []byte(setting.GetStr(conf.Token))) == 1 {
 		admin, err := op.GetAdmin()
 		if err != nil {

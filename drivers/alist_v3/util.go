@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/alist-org/alist/v3/drivers/base"
+	"github.com/alist-org/alist/v3/internal/conf"
 	"github.com/alist-org/alist/v3/internal/op"
 	"github.com/alist-org/alist/v3/pkg/utils"
 	"github.com/alist-org/alist/v3/server/common"
@@ -34,7 +35,11 @@ func (d *AListV3) login() error {
 func (d *AListV3) request(api, method string, callback base.ReqCallback, retry ...bool) ([]byte, int, error) {
 	url := d.Address + "/api" + api
 	req := base.RestyClient.R()
-	req.SetHeader("Authorization", d.Token)
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
+	req.SetHeader(jwtHeaderKey, d.Token)
 	if callback != nil {
 		callback(req)
 	}

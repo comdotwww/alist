@@ -192,7 +192,11 @@ func (d *AListV3) Put(ctx context.Context, dstDir model.Obj, s model.FileStreame
 	if err != nil {
 		return err
 	}
-	req.Header.Set("Authorization", d.Token)
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
+	req.Header.Set(jwtHeaderKey, d.Token)
 	req.Header.Set("File-Path", path.Join(dstDir.GetPath(), s.GetName()))
 	req.Header.Set("Password", d.MetaPassword)
 	if md5 := s.GetHash().GetHash(utils.MD5); len(md5) > 0 {

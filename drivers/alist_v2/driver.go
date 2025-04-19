@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/alist-org/alist/v3/drivers/base"
+	"github.com/alist-org/alist/v3/internal/conf"
 	"github.com/alist-org/alist/v3/internal/driver"
 	"github.com/alist-org/alist/v3/internal/errs"
 	"github.com/alist-org/alist/v3/internal/model"
@@ -38,10 +39,14 @@ func (d *AListV2) Drop(ctx context.Context) error {
 
 func (d *AListV2) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([]model.Obj, error) {
 	url := d.Address + "/api/public/path"
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
 	var resp common.Resp[PathResp]
 	_, err := base.RestyClient.R().
 		SetResult(&resp).
-		SetHeader("Authorization", d.AccessToken).
+		SetHeader(jwtHeaderKey, d.AccessToken).
 		SetBody(PathReq{
 			PageNum:  0,
 			PageSize: 0,
@@ -69,10 +74,14 @@ func (d *AListV2) List(ctx context.Context, dir model.Obj, args model.ListArgs) 
 
 func (d *AListV2) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (*model.Link, error) {
 	url := d.Address + "/api/public/path"
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
 	var resp common.Resp[PathResp]
 	_, err := base.RestyClient.R().
 		SetResult(&resp).
-		SetHeader("Authorization", d.AccessToken).
+		SetHeader(jwtHeaderKey, d.AccessToken).
 		SetBody(PathReq{
 			PageNum:  0,
 			PageSize: 0,

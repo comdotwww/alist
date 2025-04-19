@@ -33,7 +33,11 @@ func DelUserCacheOnline(username string) {
 		}
 		u = fmt.Sprintf("https://localhost:%d/api/admin/user/del_cache", conf.Conf.Scheme.HttpsPort)
 	}
-	res, err := client.R().SetHeader("Authorization", token).SetQueryParam("username", username).Post(u)
+	jwtHeaderKey, jwtHeaderKeyOk := conf.Conf.JwtHeaderKey.(string)         // 尝试将jwtHeaderKey断言为string类型，并检查是否成功（jwtHeaderKeyOk）
+	if !jwtHeaderKeyOk {                   // 如果断言失败（即jwtHeaderKey不是string类型）
+		jwtHeaderKey = "Authorization" // 设置默认值
+	}
+	res, err := client.R().SetHeader(jwtHeaderKey, token).SetQueryParam("username", username).Post(u)
 	if err != nil {
 		utils.Log.Warnf("[del_user_cache_online] failed: %+v", err)
 		return
